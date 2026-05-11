@@ -9,6 +9,18 @@ multi_agent = true
 
 This enables `spawn_agent`, `wait_agent`, and `close_agent` for skills like `dispatching-parallel-agents` and `subagent-driven-development`. When using subagent-driven-development, you should always close implementer and reviewer subagents when they have finished all their work.
 
+## Review Agent Dispatch
+
+For superpowers code review flows, use the configured Codex custom agent:
+
+```text
+spawn_agent(agent_type="superpowers-reviewer", message=...)
+```
+
+Use `skills/requesting-code-review/code-reviewer.md` as the canonical prompt contract. Workflow-specific prompt templates may add dispatch context and extra checks, but they should not duplicate the shared review contract.
+
+Do not substitute `worker` or `explorer` for review dispatch. If `superpowers-reviewer` is unavailable, fix the local agent configuration instead of silently falling back.
+
 ## Environment Detection
 
 Skills that create worktrees or finish branches should detect their

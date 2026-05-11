@@ -7,6 +7,8 @@ description: Use when completing tasks, implementing major features, or before m
 
 Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
 
+In Codex, use the configured `superpowers-reviewer` agent for this review path. Do not substitute `worker` or `explorer`.
+
 **Core principle:** Review early, review often.
 
 ## When to Request Review
@@ -33,6 +35,14 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
 
+In Codex, fill `requesting-code-review/code-reviewer.md` and dispatch:
+
+```text
+spawn_agent(agent_type="superpowers-reviewer", message=...)
+```
+
+`requesting-code-review/code-reviewer.md` is the canonical shared review contract for this path. Keep stack-specific review semantics there instead of duplicating them in workflow-specific prompts.
+
 **Placeholders:**
 - `{DESCRIPTION}` - Brief summary of what you built
 - `{PLAN_OR_REQUIREMENTS}` - What it should do
@@ -55,7 +65,7 @@ You: Let me request code review before proceeding.
 BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | awk '{print $1}')
 HEAD_SHA=$(git rev-parse HEAD)
 
-[Dispatch code reviewer subagent]
+[Dispatch code reviewer subagent; Codex uses superpowers-reviewer]
   DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
   PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
   BASE_SHA: a7981ec

@@ -4,6 +4,8 @@ Use this template when dispatching a code reviewer subagent.
 
 **Purpose:** Review completed work against requirements and code quality standards before it cascades into more work.
 
+This is the canonical shared review contract for superpowers review dispatch.
+
 ```
 Subagent (general-purpose):
   description: "Review code changes"
@@ -111,6 +113,8 @@ Subagent (general-purpose):
     ## Critical Rules
 
     **DO:**
+    - Review the actual diff and touched code in the provided git range
+    - Prioritize correctness, regressions, security, and missing tests over style
     - Categorize by actual severity
     - Be specific (file:line, not vague)
     - Explain WHY each issue matters
@@ -118,7 +122,9 @@ Subagent (general-purpose):
     - Give a clear verdict
 
     **DON'T:**
+    - Drift into exploration-only summaries or codebase mapping
     - Say "looks good" without checking
+    - Lead with style-only comments unless they hide a real risk
     - Mark nitpicks as Critical
     - Give feedback on code you didn't actually read
     - Be vague ("improve error handling")
