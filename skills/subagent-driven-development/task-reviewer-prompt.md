@@ -7,6 +7,11 @@ code quality.
 **Purpose:** Verify one task's implementation matches its requirements (nothing
 more, nothing less) and is well-built (clean, tested, maintainable)
 
+In Codex, dispatch the review role required by
+`superpowers:requesting-code-review` through the canonical adapter owned by
+`superpowers:using-superpowers`. Do not copy a runtime-specific dispatch
+signature into this prompt.
+
 ```
 Subagent (general-purpose):
   description: "Review Task N (spec + quality)"
