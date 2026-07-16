@@ -60,32 +60,6 @@ Only proceed to Step 1b if you have no native worktree tool available.
 
 **Only use this if Step 1a does not apply** — you have no native worktree tool available. Create a worktree manually using git.
 
-#### Repository Wrapper Preference
-
-If your instructions explicitly require creating worktrees through a repo-root `worktree.sh`, apply that preference inside this fallback path:
-
-```bash
-repo_root="$(git rev-parse --show-toplevel)"
-if [ ! -f "$repo_root/worktree.sh" ]; then
-  echo "Не использовали worktree, т.к в промте указано использовать только если присутсвует worktree.sh"
-fi
-```
-
-If `worktree.sh` exists, inspect its interface and use its create command instead of `git worktree add`:
-
-```bash
-cd "$repo_root"
-bash ./worktree.sh --help
-bash ./worktree.sh <create-subcommand> <branch-or-feature>
-```
-
-If `worktree.sh` is missing:
-1. Output the exact message above to the user.
-2. Do not create a worktree.
-3. Continue in the current workspace only if the current branch is not `master`, `develop`, or `trunk`.
-
-This preference is instruction-driven. Without an explicit `worktree.sh` requirement, continue with the standard git fallback below.
-
 #### Directory Selection
 
 Follow this priority order. Explicit user preference always beats observed filesystem state.
@@ -173,8 +147,6 @@ Ready to implement <feature-name>
 | In a submodule | Treat as normal repo (Step 0 guard) |
 | Native worktree tool available | Use it (Step 1a) |
 | No native tool | Git worktree fallback (Step 1b) |
-| Instructions require `worktree.sh` | Use repo-root script inside Step 1b |
-| Required `worktree.sh` missing | Print mandatory message, skip worktree, continue only off `master`/`develop`/`trunk` |
 | `.worktrees/` exists | Use it (verify ignored) |
 | `worktrees/` exists | Use it (verify ignored) |
 | Both exist | Use `.worktrees/` |
@@ -190,11 +162,6 @@ Ready to implement <feature-name>
 
 - **Problem:** Using `git worktree add` when the platform already provides isolation
 - **Fix:** Step 0 detects existing isolation. Step 1a defers to native tools.
-
-### Bypassing required repo wrapper
-
-- **Problem:** Instructions require `worktree.sh`, but the fallback uses `git worktree add`
-- **Fix:** In Step 1b, check repo root for `worktree.sh` and use the script when present
 
 ### Skipping detection
 
@@ -222,7 +189,6 @@ Ready to implement <feature-name>
 - Create a worktree when Step 0 detects existing isolation
 - Use `git worktree add` when you have a native worktree tool (e.g., `EnterWorktree`). This is the #1 mistake — if you have it, use it.
 - Skip Step 1a by jumping straight to Step 1b's git commands
-- Bypass `worktree.sh` when your instructions explicitly require it
 - Create worktree without verifying it's ignored (project-local)
 - Skip baseline test verification
 - Proceed with failing tests without asking
@@ -230,7 +196,6 @@ Ready to implement <feature-name>
 **Always:**
 - Run Step 0 detection first
 - Prefer native tools over git fallback
-- Honor explicit `worktree.sh` creation requirements inside the fallback path
 - Follow directory priority: explicit instructions > existing project-local directory > default
 - Verify directory is ignored for project-local
 - Auto-detect and run project setup
